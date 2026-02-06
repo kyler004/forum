@@ -3,6 +3,9 @@ import { AuthProvider } from "@/features/auth/AuthContext";
 import LoginPage from "@/features/auth/LoginPage";
 import SignUpPage from "@/features/auth/SignUpPage";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import Layout from "@/components/Layout";
+import Dashboard from "@/features/dashboard/Dashboard";
+import PostDetailsPage from "@/features/posts/PostDetailsPage";
 
 function App() {
   return (
@@ -16,21 +19,17 @@ function App() {
             <Route
               path="/"
               element={
-                <div className="min-h-screen bg-gray-50 text-gray-900">
-                  <header className="bg-white shadow-sm p-4">
-                    <div className="max-w-7xl mx-auto flex justify-between items-center">
-                      <h1 className="text-2xl font-bold text-indigo-600">
-                        DevTalk
-                      </h1>
-                      {/* Logout button could be added here later */}
-                    </div>
-                  </header>
-                  <main className="max-w-7xl mx-auto p-4">
-                    <p className="mt-4 text-gray-600">
-                      Welcome to your dashboard!
-                    </p>
-                  </main>
-                </div>
+                <Layout>
+                  <Dashboard />
+                </Layout>
+              }
+            />
+            <Route
+              path="/post/:id"
+              element={
+                <Layout>
+                  <PostDetailsPage />
+                </Layout>
               }
             />
           </Route>

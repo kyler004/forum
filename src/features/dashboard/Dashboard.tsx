@@ -7,7 +7,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col md:flex-row gap-8 items-start">
-      <aside className="w-full md:w-64 flex-shrink-0">
+      <aside className="w-full md:w-64 shrink-0">
         <Sidebar
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}

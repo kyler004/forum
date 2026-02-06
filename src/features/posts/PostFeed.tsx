@@ -28,25 +28,23 @@ export default function PostFeed({ category }: PostFeedProps) {
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
-      let query = supabase
-        .from("posts")
-        .select(
-          `
+      let query = supabase.from("posts").select(
+        `
           *,
           profiles (
             username,
             avatar_url
           )
         `,
-        )
-        .order("created_at", { ascending: false })
-        .returns<Post[]>();
+      );
 
       if (category) {
         query = query.eq("category", category);
       }
 
-      const { data, error } = await query;
+      const { data, error } = await query
+        .order("created_at", { ascending: false })
+        .returns<Post[]>();
 
       if (error) {
         console.error("Error fetching posts:", error);
