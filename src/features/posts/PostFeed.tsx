@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import PostCard from "./PostCard";
 import CreatePost from "./CreatePost";
 import { Plus } from "lucide-react";
+import Skeleton from "@/components/Skeleton";
 
 interface Post {
   id: string;

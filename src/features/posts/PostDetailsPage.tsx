@@ -6,7 +6,7 @@ import ReactMarkdown from "react-markdown";
 import { ArrowLeft } from "lucide-react";
 import CommentSection from "@/features/comments/CommentSection";
 import VoteControl from "@/components/VoteControl";
-import { useAuth } from "@/features/auth/AuthContext";
+import { useAuth } from "@/features/auth/useAuth";
 
 interface Vote {
   user_id: string;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { useAuth } from "@/features/auth/AuthContext";
+import { useAuth } from "@/features/auth/useAuth";
 import CommentItem from "./CommentItem";
 import type { Comment } from "./CommentItem";
 
@@ -38,38 +38,39 @@ export default function CommentSection({ postId }: CommentSectionProps) {
   const [newComment, setNewComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   // Define fetchComments at module level or use useCallback, but here we can just put it inside or use the standalone helper.
   // Actually, for simplicity and to avoid dependency cycles, let's keep fetch logic simple.
 
-  const fetchComments = async () => {
-    const { data, error } = await supabase
-      .from("comments")
-      .select(
-        `
-          *,
-          profiles (
-            username,
-            avatar_url
-          )
-        `,
-      )
-      .eq("post_id", postId)
-      .order("created_at", { ascending: true })
-      .returns<Comment[]>();
-
-    if (error) {
-      console.error("Error fetching comments:", error);
-    } else {
-      const tree = buildCommentTree(data || []);
-      setComments(tree);
-    }
-    setLoading(false);
-  };
-
   useEffect(() => {
+    const fetchComments = async () => {
+      const { data, error } = await supabase
+        .from("comments")
+        .select(
+          `
+            *,
+            profiles (
+              username,
+              avatar_url
+            )
+          `,
+        )
+        .eq("post_id", postId)
+        .order("created_at", { ascending: true })
+        .returns<Comment[]>();
+
+      if (error) {
+        console.error("Error fetching comments:", error);
+      } else {
+        const tree = buildCommentTree(data || []);
+        setComments(tree);
+      }
+      setLoading(false);
+    };
+
     fetchComments();
-  }, [postId]);
+  }, [postId, refreshKey]);
 
   const handlePostComment = async (
     parentId: string | null,
@@ -89,7 +90,7 @@ export default function CommentSection({ postId }: CommentSectionProps) {
       console.error("Error posting comment:", error);
       alert("Failed to post comment");
     } else {
-      await fetchComments();
+      setRefreshKey((prev) => prev + 1);
     }
   };
 

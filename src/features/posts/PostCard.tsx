@@ -3,7 +3,7 @@ import ReactMarkdown from "react-markdown";
 import { MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 import VoteControl from "@/components/VoteControl";
-import { useAuth } from "@/features/auth/AuthContext";
+import { useAuth } from "@/features/auth/useAuth";
 
 export interface Vote {
   user_id: string;

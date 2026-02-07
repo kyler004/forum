@@ -2,7 +2,7 @@ import { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { MessageSquare } from "lucide-react";
 import ReactMarkdown from "react-markdown";
-import { useAuth } from "@/features/auth/AuthContext";
+import { useAuth } from "@/features/auth/useAuth";
 import VoteControl from "@/components/VoteControl";
 
 interface Vote {
