@@ -73,10 +73,22 @@ export default function PostFeed({ category }: PostFeedProps) {
           New Post
         </button>
       </div>
-
+      import Skeleton from "@/components/Skeleton"; // ... existing code ...
       {loading ? (
-        <div className="flex justify-center p-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 space-y-4"
+            >
+              <div className="flex justify-between">
+                <Skeleton className="w-1/4 h-4" />
+                <Skeleton className="w-1/6 h-4" />
+              </div>
+              <Skeleton className="w-3/4 h-8" />
+              <Skeleton className="w-full h-16" />
+            </div>
+          ))}
         </div>
       ) : posts.length === 0 ? (
         <div className="text-center p-12 bg-white rounded-lg border border-dashed border-gray-300">
@@ -89,7 +101,6 @@ export default function PostFeed({ category }: PostFeedProps) {
           ))}
         </div>
       )}
-
       {isCreateModalOpen && (
         <CreatePost
           onClose={() => setIsCreateModalOpen(false)}

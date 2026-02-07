@@ -5,6 +5,13 @@ import { formatDistanceToNow } from "date-fns";
 import ReactMarkdown from "react-markdown";
 import { ArrowLeft } from "lucide-react";
 import CommentSection from "@/features/comments/CommentSection";
+import VoteControl from "@/components/VoteControl";
+import { useAuth } from "@/features/auth/AuthContext";
+
+interface Vote {
+  user_id: string;
+  vote_type: number;
+}
 
 interface PostDetails {
   id: string;
@@ -16,10 +23,12 @@ interface PostDetails {
     username: string;
     avatar_url: string | null;
   };
+  votes?: Vote[];
 }
 
 export default function PostDetailsPage() {
   const { id } = useParams<{ id: string }>();
+  const { user } = useAuth();
   const [post, setPost] = useState<PostDetails | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -35,6 +44,10 @@ export default function PostDetailsPage() {
           profiles (
             username,
             avatar_url
+          ),
+          votes (
+             user_id,
+             vote_type
           )
         `,
         )
@@ -84,29 +97,42 @@ export default function PostDetailsPage() {
         Back to Feed
       </Link>
 
-      <article className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 mb-8">
-        <div className="flex items-center space-x-2 text-sm text-gray-500 mb-4">
-          <span className="font-medium text-gray-900">
-            @{post.profiles.username}
-          </span>
-          <span>•</span>
-          <span>
-            {formatDistanceToNow(new Date(post.created_at), {
-              addSuffix: true,
-            })}
-          </span>
-          <span>•</span>
-          <span className="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full text-xs font-medium uppercase tracking-wide">
-            {post.category}
-          </span>
-        </div>
+      <article className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 mb-8 flex gap-6">
+        <VoteControl
+          id={post.id}
+          type="post"
+          initialScore={
+            post.votes?.reduce((acc, v) => acc + v.vote_type, 0) || 0
+          }
+          initialUserVote={
+            post.votes?.find((v) => v.user_id === user?.id)?.vote_type || 0
+          }
+        />
 
-        <h1 className="text-3xl font-extrabold text-gray-900 mb-6">
-          {post.title}
-        </h1>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center space-x-2 text-sm text-gray-500 mb-4">
+            <span className="font-medium text-gray-900">
+              @{post.profiles.username}
+            </span>
+            <span>•</span>
+            <span>
+              {formatDistanceToNow(new Date(post.created_at), {
+                addSuffix: true,
+              })}
+            </span>
+            <span>•</span>
+            <span className="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full text-xs font-medium uppercase tracking-wide">
+              {post.category}
+            </span>
+          </div>
 
-        <div className="prose prose-indigo max-w-none text-gray-800 leading-relaxed">
-          <ReactMarkdown>{post.content}</ReactMarkdown>
+          <h1 className="text-3xl font-extrabold text-gray-900 mb-6">
+            {post.title}
+          </h1>
+
+          <div className="prose prose-indigo max-w-none text-gray-800 leading-relaxed">
+            <ReactMarkdown>{post.content}</ReactMarkdown>
+          </div>
         </div>
       </article>
 

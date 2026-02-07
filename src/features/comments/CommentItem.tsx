@@ -3,6 +3,12 @@ import { formatDistanceToNow } from "date-fns";
 import { MessageSquare } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { useAuth } from "@/features/auth/AuthContext";
+import VoteControl from "@/components/VoteControl";
+
+interface Vote {
+  user_id: string;
+  vote_type: number;
+}
 
 export interface Comment {
   id: string;
@@ -13,6 +19,7 @@ export interface Comment {
     username: string;
     avatar_url: string | null;
   };
+  votes?: Vote[];
   children?: Comment[];
 }
 
@@ -46,9 +53,25 @@ export default function CommentItem({
   // Prevent too much nesting indentation visually
   const maxIndentationDepth = 3;
 
+  // Calculate score and user vote
+  const score =
+    comment.votes?.reduce((acc, vote) => acc + vote.vote_type, 0) || 0;
+  const userVote =
+    comment.votes?.find((v) => v.user_id === user?.id)?.vote_type || 0;
+
   return (
     <div className={`flex flex-col ${depth > 0 ? "mt-4" : ""}`}>
       <div className="flex gap-3">
+        {/* Vote Control */}
+        <div className="shrink-0 pt-1">
+          <VoteControl
+            id={comment.id}
+            type="comment"
+            initialScore={score}
+            initialUserVote={userVote}
+          />
+        </div>
+
         {/* Avatar Placeholder */}
         <div className="shrink-0">
           <div
