@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "sonner";
 import { AuthProvider } from "@/features/auth/AuthProvider";
 import LoginPage from "@/features/auth/LoginPage";
 import SignUpPage from "@/features/auth/SignUpPage";
@@ -11,6 +12,7 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <Toaster position="top-center" richColors />
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
