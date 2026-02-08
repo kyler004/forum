@@ -74,7 +74,7 @@ export default function PostFeed({ category }: PostFeedProps) {
           New Post
         </button>
       </div>
-      import Skeleton from "@/components/Skeleton"; // ... existing code ...
+      {/* import Skeleton from "@/components/Skeleton"; // ... existing code ... */}
       {loading ? (
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
