@@ -152,7 +152,7 @@ export default function SignUpPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="group relative flex w-full justify-center items-center rounded-xl bg-indigo-600 px-3.5 py-3 text-sm font-bold text-white shadow-xl shadow-indigo-100 hover:bg-indigo-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all active:scale-[0.98] disabled:opacity-50"
+                className="group relative flex w-full justify-center items-center rounded-xl bg-indigo-600 px-3.5 py-3 text-sm font-bold text-white shadow-xl shadow-indigo-100 hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all active:scale-[0.98] disabled:opacity-50"
               >
                 {loading ? (
                   <span className="flex items-center">
