@@ -106,14 +106,16 @@ export default function CommentSection({ postId }: CommentSectionProps) {
 
   return (
     <div className="mt-8">
-      <h3 className="text-lg font-bold text-gray-900 mb-6">Discussion</h3>
+      <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6">
+        Discussion
+      </h3>
 
       {user ? (
         <form onSubmit={handleSubmitTopLevel} className="mb-8">
           <textarea
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3 border"
+            className="w-full rounded-md border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 p-3 border transition-colors"
             placeholder="What are your thoughts?"
             rows={3}
           />
@@ -121,16 +123,19 @@ export default function CommentSection({ postId }: CommentSectionProps) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:opacity-50"
+              className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 dark:bg-indigo-500 rounded-md hover:bg-indigo-700 dark:hover:bg-indigo-600 disabled:opacity-50 transition-colors"
             >
               Post Comment
             </button>
           </div>
         </form>
       ) : (
-        <div className="bg-gray-50 p-4 rounded-md mb-8 text-sm text-gray-600">
+        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-md mb-8 text-sm text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700">
           Please{" "}
-          <a href="/login" className="text-indigo-600 hover:underline">
+          <a
+            href="/login"
+            className="text-indigo-600 dark:text-indigo-400 hover:underline"
+          >
             sign in
           </a>{" "}
           to leave a comment.
@@ -138,11 +143,11 @@ export default function CommentSection({ postId }: CommentSectionProps) {
       )}
 
       {loading ? (
-        <div className="text-center py-4 text-gray-500">
+        <div className="text-center py-4 text-gray-500 dark:text-gray-400">
           Loading comments...
         </div>
       ) : comments.length === 0 ? (
-        <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-lg">
+        <div className="text-center py-8 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 rounded-lg border border-dashed border-gray-300 dark:border-gray-700">
           No comments yet. Be the first to share your thoughts!
         </div>
       ) : (

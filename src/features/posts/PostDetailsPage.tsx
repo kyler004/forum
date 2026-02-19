@@ -91,13 +91,13 @@ export default function PostDetailsPage() {
     <div className="max-w-4xl mx-auto">
       <Link
         to="/"
-        className="inline-flex items-center text-sm text-gray-500 hover:text-indigo-600 mb-6 transition-colors"
+        className="inline-flex items-center text-sm text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 mb-6 transition-colors"
       >
         <ArrowLeft size={16} className="mr-1" />
         Back to Feed
       </Link>
 
-      <article className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 mb-8 flex gap-6">
+      <article className="bg-white dark:bg-gray-900 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 mb-8 flex gap-6 transition-colors duration-300">
         <VoteControl
           id={post.id}
           type="post"
@@ -110,8 +110,8 @@ export default function PostDetailsPage() {
         />
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-center space-x-2 text-sm text-gray-500 mb-4">
-            <span className="font-medium text-gray-900">
+          <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 mb-4">
+            <span className="font-medium text-gray-900 dark:text-gray-100">
               @{post.profiles.username}
             </span>
             <span>•</span>
@@ -121,16 +121,16 @@ export default function PostDetailsPage() {
               })}
             </span>
             <span>•</span>
-            <span className="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full text-xs font-medium uppercase tracking-wide">
+            <span className="bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full text-xs font-medium uppercase tracking-wide">
               {post.category}
             </span>
           </div>
 
-          <h1 className="text-3xl font-extrabold text-gray-900 mb-6">
+          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-gray-100 mb-6">
             {post.title}
           </h1>
 
-          <div className="prose prose-indigo max-w-none text-gray-800 leading-relaxed">
+          <div className="prose prose-indigo dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
             <ReactMarkdown>{post.content}</ReactMarkdown>
           </div>
         </div>

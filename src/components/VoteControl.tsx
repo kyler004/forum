@@ -87,21 +87,21 @@ export default function VoteControl({
     <div className="flex flex-col items-center mr-4">
       <button
         onClick={() => handleVote(1)}
-        className={`p-1 rounded hover:bg-gray-100 ${userVote === 1 ? "text-orange-500" : "text-gray-400"}`}
+        className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${userVote === 1 ? "text-orange-500" : "text-gray-400 dark:text-gray-500"}`}
         disabled={isVoting}
       >
         <ChevronUp size={24} />
       </button>
 
       <span
-        className={`text-sm font-bold ${userVote !== 0 ? (userVote === 1 ? "text-orange-500" : "text-indigo-500") : "text-gray-700"}`}
+        className={`text-sm font-bold ${userVote !== 0 ? (userVote === 1 ? "text-orange-500" : "text-indigo-500 dark:text-indigo-400") : "text-gray-700 dark:text-gray-300"}`}
       >
         {score}
       </span>
 
       <button
         onClick={() => handleVote(-1)}
-        className={`p-1 rounded hover:bg-gray-100 ${userVote === -1 ? "text-indigo-500" : "text-gray-400"}`}
+        className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${userVote === -1 ? "text-indigo-500 dark:text-indigo-400" : "text-gray-400 dark:text-gray-500"}`}
         disabled={isVoting}
       >
         <ChevronDown size={24} />

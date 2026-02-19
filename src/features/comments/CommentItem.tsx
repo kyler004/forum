@@ -75,7 +75,7 @@ export default function CommentItem({
         {/* Avatar Placeholder */}
         <div className="shrink-0">
           <div
-            className={`rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold
+            className={`rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 font-bold
                 ${depth === 0 ? "w-8 h-8 text-xs" : "w-6 h-6 text-[10px]"}`}
           >
             {comment.profiles.username.charAt(0).toUpperCase()}
@@ -84,17 +84,17 @@ export default function CommentItem({
 
         <div className="flex-1 min-w-0">
           <div className="text-sm">
-            <span className="font-semibold text-gray-900 mr-2">
+            <span className="font-semibold text-gray-900 dark:text-gray-100 mr-2">
               {comment.profiles.username}
             </span>
-            <span className="text-gray-500 text-xs">
+            <span className="text-gray-500 dark:text-gray-400 text-xs">
               {formatDistanceToNow(new Date(comment.created_at), {
                 addSuffix: true,
               })}
             </span>
           </div>
 
-          <div className="mt-1 text-sm text-gray-800 prose prose-sm max-w-none">
+          <div className="mt-1 text-sm text-gray-800 dark:text-gray-200 prose prose-sm dark:prose-invert max-w-none">
             <ReactMarkdown>{comment.content}</ReactMarkdown>
           </div>
 
@@ -102,7 +102,7 @@ export default function CommentItem({
             {user && (
               <button
                 onClick={() => setIsReplying(!isReplying)}
-                className="flex items-center text-xs text-gray-500 hover:text-indigo-600 font-medium transition-colors"
+                className="flex items-center text-xs text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors"
               >
                 <MessageSquare size={14} className="mr-1" />
                 Reply
@@ -119,21 +119,21 @@ export default function CommentItem({
                 value={replyContent}
                 onChange={(e) => setReplyContent(e.target.value)}
                 placeholder="Write your reply..."
-                className="w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 min-h-[80px] p-2 border"
+                className="w-full text-sm rounded-md border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 min-h-[80px] p-2 border transition-colors"
                 autoFocus
               />
               <div className="mt-2 flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setIsReplying(false)}
-                  className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                  className="px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-3 py-1.5 text-xs font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:opacity-50"
+                  className="px-3 py-1.5 text-xs font-medium text-white bg-indigo-600 dark:bg-indigo-500 rounded-md hover:bg-indigo-700 dark:hover:bg-indigo-600 disabled:opacity-50 transition-colors"
                 >
                   {isSubmitting ? "Posting..." : "Reply"}
                 </button>
@@ -145,7 +145,7 @@ export default function CommentItem({
 
       {comment.children && comment.children.length > 0 && (
         <div
-          className={`relative ${depth < maxIndentationDepth ? "ml-6 pl-4 border-l-2 border-gray-100" : "mt-2"}`}
+          className={`relative ${depth < maxIndentationDepth ? "ml-6 pl-4 border-l-2 border-gray-100 dark:border-gray-800" : "mt-2"}`}
         >
           {comment.children.map((child) => (
             <CommentItem

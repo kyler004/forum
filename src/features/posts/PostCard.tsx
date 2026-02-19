@@ -36,7 +36,7 @@ export default function PostCard({ post }: PostCardProps) {
     post.votes?.find((v) => v.user_id === user?.id)?.vote_type || 0;
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:border-indigo-100 transition-colors flex gap-4">
+    <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 hover:border-indigo-100 dark:hover:border-indigo-900 transition-colors flex gap-4">
       {/* Vote Control - Left Side */}
       <div className="shrink-0 pt-1">
         <VoteControl
@@ -48,8 +48,8 @@ export default function PostCard({ post }: PostCardProps) {
       </div>
 
       <div className="flex-1 min-w-0">
-        <div className="flex items-center space-x-2 text-xs text-gray-500 mb-2">
-          <span className="font-medium text-gray-900">
+        <div className="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400 mb-2">
+          <span className="font-medium text-gray-900 dark:text-gray-100">
             @{post.profiles.username}
           </span>
           <span>•</span>
@@ -59,24 +59,24 @@ export default function PostCard({ post }: PostCardProps) {
             })}
           </span>
           <span>•</span>
-          <span className="bg-gray-100 px-2 py-0.5 rounded-full text-gray-600">
+          <span className="bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-full text-gray-600 dark:text-gray-300">
             {post.category}
           </span>
         </div>
 
         <Link to={`/post/${post.id}`} className="block group">
-          <h3 className="text-xl font-bold text-gray-900 group-hover:text-indigo-600 mb-2">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 mb-2 transition-colors">
             {post.title}
           </h3>
-          <div className="text-gray-600 line-clamp-3 prose prose-sm max-w-none">
+          <div className="text-gray-600 dark:text-gray-300 line-clamp-3 prose prose-sm dark:prose-invert max-w-none">
             <ReactMarkdown>{post.content}</ReactMarkdown>
           </div>
         </Link>
 
-        <div className="flex items-center mt-4 space-x-4 text-gray-500">
+        <div className="flex items-center mt-4 space-x-4 text-gray-500 dark:text-gray-400">
           <Link
             to={`/post/${post.id}`}
-            className="flex items-center space-x-1 hover:bg-gray-50 px-2 py-1 rounded-md cursor-pointer transition-colors hover:text-indigo-600"
+            className="flex items-center space-x-1 hover:bg-gray-50 dark:hover:bg-gray-800 px-2 py-1 rounded-md cursor-pointer transition-colors hover:text-indigo-600 dark:hover:text-indigo-400"
           >
             <MessageSquare size={18} />
             <span className="text-sm font-medium">Comments</span>

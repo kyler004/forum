@@ -42,19 +42,19 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-indigo-50 via-white to-purple-50 px-4 py-12 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 px-4 py-12 sm:px-6 lg:px-8 transition-colors duration-300">
       <div className="w-full max-w-md">
-        <div className="bg-white px-8 py-10 shadow-2xl rounded-2xl border border-gray-100 space-y-8">
+        <div className="bg-white dark:bg-gray-900 px-8 py-10 shadow-2xl rounded-2xl border border-gray-100 dark:border-gray-800 space-y-8 transition-colors duration-300">
           <div>
             <div className="flex justify-center">
-              <div className="h-12 w-12 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
+              <div className="h-12 w-12 bg-indigo-600 dark:bg-indigo-500 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200 dark:shadow-none">
                 <UserPlus className="h-6 w-6 text-white" />
               </div>
             </div>
-            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 tracking-tight">
+            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">
               Create Account
             </h2>
-            <p className="mt-2 text-center text-sm text-gray-500">
+            <p className="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
               Join the DevTalk community today
             </p>
           </div>
@@ -64,12 +64,12 @@ export default function SignUpPage() {
               <div>
                 <label
                   htmlFor="username"
-                  className="block text-sm font-semibold text-gray-700 mb-1.5 ml-0.5"
+                  className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5 ml-0.5"
                 >
                   Username
                 </label>
                 <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-600 transition-colors">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-600 dark:group-focus-within:text-indigo-400 transition-colors">
                     <User className="h-5 w-5" />
                   </div>
                   <input
@@ -78,7 +78,7 @@ export default function SignUpPage() {
                     type="text"
                     autoComplete="username"
                     required
-                    className="block w-full rounded-xl border-0 py-2.5 pl-11 pr-3.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition-all bg-gray-50/50 focus:bg-white"
+                    className="block w-full rounded-xl border-0 py-2.5 pl-11 pr-3.5 text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600 dark:focus:ring-indigo-500 sm:text-sm sm:leading-6 transition-all bg-gray-50/50 dark:bg-gray-800/50 focus:bg-white dark:focus:bg-gray-800"
                     placeholder="johndoe"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
@@ -89,12 +89,12 @@ export default function SignUpPage() {
               <div>
                 <label
                   htmlFor="email-address"
-                  className="block text-sm font-semibold text-gray-700 mb-1.5 ml-0.5"
+                  className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5 ml-0.5"
                 >
                   Email Address
                 </label>
                 <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-600 transition-colors">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-600 dark:group-focus-within:text-indigo-400 transition-colors">
                     <Mail className="h-5 w-5" />
                   </div>
                   <input
@@ -103,7 +103,7 @@ export default function SignUpPage() {
                     type="email"
                     autoComplete="email"
                     required
-                    className="block w-full rounded-xl border-0 py-2.5 pl-11 pr-3.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition-all bg-gray-50/50 focus:bg-white"
+                    className="block w-full rounded-xl border-0 py-2.5 pl-11 pr-3.5 text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600 dark:focus:ring-indigo-500 sm:text-sm sm:leading-6 transition-all bg-gray-50/50 dark:bg-gray-800/50 focus:bg-white dark:focus:bg-gray-800"
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -114,12 +114,12 @@ export default function SignUpPage() {
               <div>
                 <label
                   htmlFor="password"
-                  className="block text-sm font-semibold text-gray-700 mb-1.5 ml-0.5"
+                  className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5 ml-0.5"
                 >
                   Password
                 </label>
                 <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-600 transition-colors">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-600 dark:group-focus-within:text-indigo-400 transition-colors">
                     <Lock className="h-5 w-5" />
                   </div>
                   <input
@@ -128,14 +128,14 @@ export default function SignUpPage() {
                     type={showPassword ? "text" : "password"}
                     autoComplete="new-password"
                     required
-                    className="block w-full rounded-xl border-0 py-2.5 pl-11 pr-11 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition-all bg-gray-50/50 focus:bg-white"
+                    className="block w-full rounded-xl border-0 py-2.5 pl-11 pr-11 text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600 dark:focus:ring-indigo-500 sm:text-sm sm:leading-6 transition-all bg-gray-50/50 dark:bg-gray-800/50 focus:bg-white dark:focus:bg-gray-800"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
                   <button
                     type="button"
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-indigo-600 transition-colors"
+                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -152,7 +152,7 @@ export default function SignUpPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="group relative flex w-full justify-center items-center rounded-xl bg-indigo-600 px-3.5 py-3 text-sm font-bold text-white shadow-xl shadow-indigo-100 hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all active:scale-[0.98] disabled:opacity-50"
+                className="group relative flex w-full justify-center items-center rounded-xl bg-indigo-600 dark:bg-indigo-500 px-3.5 py-3 text-sm font-bold text-white shadow-xl shadow-indigo-100 dark:shadow-none hover:bg-indigo-700 dark:hover:bg-indigo-600 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:focus-visible:outline-indigo-500 transition-all active:scale-[0.98] disabled:opacity-50"
               >
                 {loading ? (
                   <span className="flex items-center">
@@ -185,11 +185,11 @@ export default function SignUpPage() {
             </div>
           </form>
 
-          <p className="text-center text-sm text-gray-500">
+          <p className="text-center text-sm text-gray-500 dark:text-gray-400">
             Already have an account?{" "}
             <Link
               to="/login"
-              className="font-bold text-indigo-600 hover:text-indigo-500 transition-colors"
+              className="font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors"
             >
               Sign in
             </Link>

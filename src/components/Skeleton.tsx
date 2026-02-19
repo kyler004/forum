@@ -7,7 +7,8 @@ export default function Skeleton({
   className = "",
   variant = "text",
 }: SkeletonProps) {
-  const baseClasses = "animate-pulse bg-gray-200 rounded";
+  const baseClasses =
+    "animate-pulse bg-gray-200 dark:bg-gray-700 rounded transition-colors";
 
   let variantClasses = "";
   if (variant === "text") variantClasses = "h-4 w-full";
