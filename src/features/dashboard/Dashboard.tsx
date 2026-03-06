@@ -6,7 +6,7 @@ export default function Dashboard() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   return (
-    <div className="flex flex-col md:flex-row gap-8 items-start">
+    <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-start">
       <aside className="w-full md:w-64 shrink-0">
         <Sidebar
           selectedCategory={selectedCategory}

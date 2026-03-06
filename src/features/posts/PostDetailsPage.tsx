@@ -97,7 +97,7 @@ export default function PostDetailsPage() {
         Back to Feed
       </Link>
 
-      <article className="bg-white dark:bg-gray-900 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 mb-8 flex gap-6 transition-colors duration-300">
+      <article className="bg-white dark:bg-gray-900 p-5 sm:p-8 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 mb-8 flex flex-col sm:flex-row gap-4 sm:gap-6 transition-colors duration-300">
         <VoteControl
           id={post.id}
           type="post"

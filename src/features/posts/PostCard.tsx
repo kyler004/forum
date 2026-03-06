@@ -36,7 +36,7 @@ export default function PostCard({ post }: PostCardProps) {
     post.votes?.find((v) => v.user_id === user?.id)?.vote_type || 0;
 
   return (
-    <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 hover:border-indigo-100 dark:hover:border-indigo-900 transition-colors flex gap-4">
+    <div className="bg-white dark:bg-gray-900 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 hover:border-indigo-100 dark:hover:border-indigo-900 transition-colors flex gap-3 sm:gap-4">
       {/* Vote Control - Left Side */}
       <div className="shrink-0 pt-1">
         <VoteControl

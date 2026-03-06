@@ -84,7 +84,7 @@ export default function VoteControl({
   };
 
   return (
-    <div className="flex flex-col items-center mr-4">
+    <div className="flex flex-col items-center shrink-0">
       <button
         onClick={() => handleVote(1)}
         className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${userVote === 1 ? "text-orange-500" : "text-gray-400 dark:text-gray-500"}`}

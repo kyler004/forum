@@ -18,8 +18,8 @@ export default function Sidebar({
   ];
 
   return (
-    <div className="w-64 bg-white dark:bg-gray-900 shadow-sm rounded-lg p-4 h-fit sticky top-4 border border-transparent dark:border-gray-800 transition-colors duration-300">
-      <nav className="space-y-1">
+    <div className="w-full md:w-64 bg-white dark:bg-gray-900 shadow-sm rounded-lg p-4 h-fit md:sticky md:top-4 border border-transparent dark:border-gray-800 transition-colors duration-300">
+      <nav className="flex overflow-x-auto md:flex-col gap-2 md:gap-0 md:space-y-1 pb-2 md:pb-0 scrollbar-hide">
         {categories.map((category) => {
           const Icon = category.icon;
           const isActive =
@@ -33,7 +33,7 @@ export default function Sidebar({
               onClick={() =>
                 onSelectCategory(category.id === "all" ? null : category.id)
               }
-              className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+              className={`md:w-full shrink-0 flex items-center px-4 py-2 md:py-3 text-sm font-medium rounded-md transition-colors ${
                 isActive
                   ? "bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300"
                   : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
