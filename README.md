@@ -9,15 +9,18 @@ A modern, full-stack forum application built for developers to share knowledge, 
 - **Discussion Feed**: Filterable feed of latest discussions and topics.
 - **Categories**: Organize posts by topics (React, JavaScript, Career, etc.).
 - **Responsive Design**: Fully responsive UI built with Tailwind CSS.
-- **Real-time Updates**: (Planned) Real-time notifications and feed updates.
+- **Real-time Updates**: Real-time subscriptions for posts, comments, and voting.
+- **Data Caching**: Robust state management and caching via TanStack Query.
 
 ## 🛠️ Tech Stack
 
 - **Frontend**: React 19, TypeScript, Vite
+- **Data Fetching**: TanStack Query (React Query)
 - **Styling**: Tailwind CSS 4
 - **Icons**: Lucide React
 - **Routing**: React Router DOM 7
 - **Backend / Database**: Supabase (PostgreSQL)
+- **Testing**: Vitest, React Testing Library, Playwright
 - **Utilities**:
   - `date-fns` for date formatting
   - `sonner` for toast notifications
@@ -73,6 +76,26 @@ npm run dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173) to view it in your browser.
+
+## 🧪 Testing
+
+The project includes a comprehensive suite of unit and end-to-end tests.
+
+### Unit Tests (Vitest)
+Unit tests cover component logic, state management, and utility functions.
+```bash
+npm test
+```
+
+### E2E Tests (Playwright)
+End-to-end tests verify critical user flows like login and signup.
+```bash
+# First, ensure browsers are installed
+npx playwright install
+
+# Run the tests
+npm run test:e2e
+```
 
 ## 📂 Project Structure
 
