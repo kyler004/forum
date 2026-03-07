@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/features/auth/useAuth";
@@ -17,38 +18,57 @@ export default function VoteControl({
   initialUserVote = 0,
 }: VoteControlProps) {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [score, setScore] = useState(initialScore);
   const [userVote, setUserVote] = useState(initialUserVote);
-  const [isVoting, setIsVoting] = useState(false);
 
-  const handleVote = async (newVote: number) => {
-    if (!user) {
-      alert("Please sign in to vote!");
-      return;
-    }
-    if (isVoting) return;
+  useEffect(() => {
+    // If we only have initial props for score, Realtime might not update local state unless we refetch.
+    // However, since we invalidate the query on success, the parent component refetches, sending new `initialScore`.
+    // We just need to ensure the query client invalidates when other users vote.
+    const channel = supabase
+      .channel(`public:votes:${type}:${id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "votes",
+          filter: `${type === "post" ? "post_id" : "comment_id"}=eq.${id}`,
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: type === "post" ? ["posts"] : ["comments"] });
+          if (type === "post") {
+            queryClient.invalidateQueries({ queryKey: ["post", id] });
+          }
+        },
+      )
+      .subscribe();
 
-    // 1. Optimistic Update
-    const previousVote = userVote;
-    const previousScore = score;
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [id, type, queryClient]);
 
-    // If clicking same vote again, toggle off (0)
-    const targetVote = newVote === userVote ? 0 : newVote;
+  // We use the initialScore from props (which is updated by React Query)
+  // but if the user just voted, we want to show the optimistic update immediately.
+  // A clean way to handle this without `useEffect` synchronization is to derive 
+  // the displayed score/vote from props and a local "pending" state.
+  // However, since we invalidate the query, `initialScore` will update shortly after.
+  
+  const [prevInitialScore, setPrevInitialScore] = useState(initialScore);
 
-    // Calculate score change
-    // Example: Old 0, New 1 => +1
-    // Example: Old 1, New -1 => -2
-    // Example: Old 1, New 0 => -1
-    const scoreChange = targetVote - previousVote;
+  if (initialScore !== prevInitialScore) {
+    setPrevInitialScore(initialScore);
+    setScore(initialScore);
+    setUserVote(initialUserVote);
+  }
 
-    setUserVote(targetVote);
-    setScore((prev) => prev + scoreChange);
-    setIsVoting(true);
-
-    // 2. API Call
-    try {
+  const voteMutation = useMutation({
+    mutationFn: async ({ targetVote }: { targetVote: number }) => {
+      if (!user) throw new Error("Not authenticated");
+      
       if (targetVote === 0) {
-        // Remove vote
         const { error } = await supabase
           .from("votes")
           .delete()
@@ -56,10 +76,8 @@ export default function VoteControl({
             user_id: user.id,
             [type === "post" ? "post_id" : "comment_id"]: id,
           });
-
-        if (error) throw error;
+        if (error) throw new Error(error.message);
       } else {
-        // Upsert vote
         const { error } = await supabase.from("votes").upsert(
           {
             user_id: user.id,
@@ -70,17 +88,50 @@ export default function VoteControl({
             onConflict: `user_id, ${type === "post" ? "post_id" : "comment_id"}`,
           },
         );
-
-        if (error) throw error;
+        if (error) throw new Error(error.message);
       }
-    } catch (error) {
+    },
+    onSuccess: () => {
+      // Background refetch to ensure consistency with other clients
+      queryClient.invalidateQueries({ queryKey: type === "post" ? ["posts"] : ["comments"] });
+      if (type === "post") {
+          queryClient.invalidateQueries({ queryKey: ["post", id] });
+      }
+    },
+    onError: (error) => {
       console.error("Voting failed:", error);
-      // Revert optimization
-      setUserVote(previousVote);
-      setScore(previousScore);
-    } finally {
-      setIsVoting(false);
+      // Revert optimization (context should theoretically contain them if we set it up in onMutate, 
+      // but since we keep local state for score/vote, we could just rely on props reset or manual revert)
+      // For a quick fix, if error, we don't have the previous values easily passing through context here without onMutate, 
+      // but we can trust the queryClient invalidation will fix it eventually.
     }
+  });
+
+  const handleVote = async (newVote: number) => {
+    if (!user) {
+      alert("Please sign in to vote!");
+      return;
+    }
+    if (voteMutation.isPending) return;
+
+    // 1. Optimistic Update
+    const previousVote = userVote;
+    const previousScore = score;
+
+    const targetVote = newVote === userVote ? 0 : newVote;
+    const scoreChange = targetVote - previousVote;
+
+    setUserVote(targetVote);
+    setScore((prev) => prev + scoreChange);
+
+    // 2. API Call via Mutation
+    voteMutation.mutate({ targetVote }, {
+      onError: () => {
+        // Revert optimization
+        setUserVote(previousVote);
+        setScore(previousScore);
+      }
+    });
   };
 
   return (
@@ -88,7 +139,7 @@ export default function VoteControl({
       <button
         onClick={() => handleVote(1)}
         className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${userVote === 1 ? "text-orange-500" : "text-gray-400 dark:text-gray-500"}`}
-        disabled={isVoting}
+        disabled={voteMutation.isPending}
       >
         <ChevronUp size={24} />
       </button>
@@ -102,7 +153,7 @@ export default function VoteControl({
       <button
         onClick={() => handleVote(-1)}
         className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${userVote === -1 ? "text-indigo-500 dark:text-indigo-400" : "text-gray-400 dark:text-gray-500"}`}
-        disabled={isVoting}
+        disabled={voteMutation.isPending}
       >
         <ChevronDown size={24} />
       </button>

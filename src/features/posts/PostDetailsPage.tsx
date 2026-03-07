@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { formatDistanceToNow } from "date-fns";
@@ -29,12 +29,11 @@ interface PostDetails {
 export default function PostDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
-  const [post, setPost] = useState<PostDetails | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchPost = async () => {
-      if (!id) return;
+  const { data: post, isLoading: loading } = useQuery({
+    queryKey: ["post", id],
+    queryFn: async () => {
+      if (!id) return null;
 
       const { data, error } = await supabase
         .from("posts")
@@ -56,14 +55,13 @@ export default function PostDetailsPage() {
 
       if (error) {
         console.error("Error fetching post:", error);
-      } else {
-        setPost(data);
+        throw new Error(error.message);
       }
-      setLoading(false);
-    };
-
-    fetchPost();
-  }, [id]);
+      
+      return data as PostDetails;
+    },
+    enabled: !!id,
+  });
 
   if (loading) {
     return (

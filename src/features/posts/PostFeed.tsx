@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import PostCard from "./PostCard";
 import CreatePost from "./CreatePost";
@@ -22,19 +23,39 @@ interface PostFeedProps {
 }
 
 export default function PostFeed({ category }: PostFeedProps) {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      setLoading(true);
+    const channel = supabase
+      .channel("public:posts")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "posts" },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["posts"] });
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+
+  const { data: posts = [], isLoading: loading } = useQuery({
+    queryKey: ["posts", category || "all"],
+    queryFn: async () => {
       let query = supabase.from("posts").select(
         `
           *,
           profiles (
             username,
             avatar_url
+          ),
+          votes (
+            user_id,
+            vote_type
           )
         `,
       );
@@ -49,14 +70,11 @@ export default function PostFeed({ category }: PostFeedProps) {
 
       if (error) {
         console.error("Error fetching posts:", error);
-      } else {
-        setPosts(data || []);
+        throw new Error(error.message);
       }
-      setLoading(false);
-    };
-
-    fetchPosts();
-  }, [category]);
+      return data || [];
+    },
+  });
 
   return (
     <div className="space-y-6">
@@ -108,9 +126,9 @@ export default function PostFeed({ category }: PostFeedProps) {
         <CreatePost
           onClose={() => setIsCreateModalOpen(false)}
           onPostCreated={() => {
-            // To trigger a refetch, we might need to lift state or use a query library (TanStack Query).
-            // For now, we can just reload the page or add a simple refresh trigger.
-            window.location.reload();
+            // CreatePost already calls queryClient.invalidateQueries({ queryKey: ["posts"] })
+            // in its onSuccess handler, so nothing extra is needed here.
+            setIsCreateModalOpen(false);
           }}
         />
       )}

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/features/auth/useAuth";
 import { supabase } from "@/lib/supabase";
 import { X } from "lucide-react";
@@ -13,35 +14,42 @@ export default function CreatePost({
   onClose,
 }: CreatePostProps) {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("general");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const createPostMutation = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error("Not authenticated");
+      const { data, error: insertError } = await supabase.from("posts").insert({
+        title,
+        content,
+        category,
+        author_id: user.id,
+      }).select().single();
+
+      if (insertError) throw new Error(insertError.message);
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      onPostCreated();
+      onClose();
+    },
+    onError: (err) => {
+      setError(err.message);
+    }
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
-
-    setLoading(true);
     setError(null);
-
-    const { error: insertError } = await supabase.from("posts").insert({
-      title,
-      content,
-      category,
-      author_id: user.id,
-    });
-
-    if (insertError) {
-      setError(insertError.message);
-      setLoading(false);
-    } else {
-      setLoading(false);
-      onPostCreated();
-      onClose();
-    }
+    createPostMutation.mutate();
   };
+
+
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
@@ -131,10 +139,10 @@ export default function CreatePost({
             </button>
             <button
               type="submit"
-              disabled={loading}
+              disabled={createPostMutation.isPending}
               className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 dark:bg-indigo-500 rounded-md hover:bg-indigo-700 dark:hover:bg-indigo-600 disabled:opacity-50 transition-colors"
             >
-              {loading ? "Posting..." : "Post"}
+              {createPostMutation.isPending ? "Posting..." : "Post"}
             </button>
           </div>
         </form>

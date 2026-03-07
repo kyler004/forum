@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/features/auth/useAuth";
 import CommentItem from "./CommentItem";
@@ -34,17 +35,34 @@ const buildCommentTree = (flatComments: Comment[]): Comment[] => {
 
 export default function CommentSection({ postId }: CommentSectionProps) {
   const { user } = useAuth();
-  const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  // Define fetchComments at module level or use useCallback, but here we can just put it inside or use the standalone helper.
-  // Actually, for simplicity and to avoid dependency cycles, let's keep fetch logic simple.
+  const queryClient = useQueryClient();
 
   useEffect(() => {
-    const fetchComments = async () => {
+    const channel = supabase
+      .channel(`public:comments:${postId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "comments",
+          filter: `post_id=eq.${postId}`,
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [postId, queryClient]);
+
+  const { data: comments = [], isLoading: loading } = useQuery({
+    queryKey: ["comments", postId],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from("comments")
         .select(
@@ -62,46 +80,50 @@ export default function CommentSection({ postId }: CommentSectionProps) {
 
       if (error) {
         console.error("Error fetching comments:", error);
-      } else {
-        const tree = buildCommentTree(data || []);
-        setComments(tree);
+        throw new Error(error.message);
       }
-      setLoading(false);
-    };
+      return buildCommentTree(data || []);
+    },
+    enabled: !!postId,
+  });
 
-    fetchComments();
-  }, [postId, refreshKey]);
+  const postCommentMutation = useMutation({
+    mutationFn: async ({ parentId, content }: { parentId: string | null; content: string }) => {
+      if (!user) throw new Error("Not authenticated");
+      const { data, error } = await supabase.from("comments").insert({
+        content,
+        post_id: postId,
+        author_id: user.id,
+        parent_id: parentId,
+      }).select().single();
+
+      if (error) {
+        throw new Error(error.message);
+      }
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+    },
+    onError: (error) => {
+      console.error("Error posting comment:", error);
+      alert("Failed to post comment");
+    }
+  });
 
   const handlePostComment = async (
     parentId: string | null,
     content: string,
   ) => {
-    if (!user) return;
-
-    // Optimistic update could be added here, but for now we wait for server
-    const { error } = await supabase.from("comments").insert({
-      content,
-      post_id: postId,
-      author_id: user.id,
-      parent_id: parentId,
-    });
-
-    if (error) {
-      console.error("Error posting comment:", error);
-      alert("Failed to post comment");
-    } else {
-      setRefreshKey((prev) => prev + 1);
-    }
+    postCommentMutation.mutate({ parentId, content });
   };
 
   const handleSubmitTopLevel = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newComment.trim()) return;
 
-    setIsSubmitting(true);
-    await handlePostComment(null, newComment);
+    postCommentMutation.mutate({ parentId: null, content: newComment });
     setNewComment("");
-    setIsSubmitting(false);
   };
 
   return (
@@ -122,7 +144,7 @@ export default function CommentSection({ postId }: CommentSectionProps) {
           <div className="mt-2 flex justify-end">
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={postCommentMutation.isPending}
               className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 dark:bg-indigo-500 rounded-md hover:bg-indigo-700 dark:hover:bg-indigo-600 disabled:opacity-50 transition-colors"
             >
               Post Comment
